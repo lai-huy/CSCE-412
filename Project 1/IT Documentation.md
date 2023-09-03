@@ -6,7 +6,7 @@
     </picture>
 </p>
 
-# Creating the Environment
+# Information Technology Documentation
 The Virtual Machine was created using Amazon Web Service's Lightsail framework using the Windows Server 2019.  
 <img src="https://cdn.worldvectorlogo.com/logos/amazon-lightsail.svg" alt="AWS Lightsail" width=128px>
 
@@ -46,3 +46,28 @@ Write-Output "Completed" >> $loc
 9. Alter the names as desired. Here is where you can scale deployment to as many virtual machines as needed.
 10. Click on the "Create Instance" button.
 11. Booting and instalization of the programs will take a few minutes.
+
+## Justificiation of Pre-installed Software
+Every instance of the Virtual Machine should come preinstalled with the following programs:
+- Visual Studio Code
+- Git
+- Java
+- Adobe Acrobat Reader
+
+This part of the document will go over why these programs specifically are included
+
+### Visual Studio Code
+- **Devlopment Environment:** VS Code is a popular, lightweight code editor that supports a wide range of programming languages.
+- **Productivity:** Developers often rely on VS Code extensions for tasks like debugging, code version control, and project management.
+
+### Git
+- **Version Control:** Git is a fundamental tool for version control in software development.
+- **Seamless Integration:** Many development workflows depend on Git, so having it ready+ to use without manual installation simplifies the setup process.
+
+### Java
+- **Cross-Platform Development:** Java is a widely used, cross-platform programming language. Preinstalling Java enables users to run Java applications, applets, and development environments without dealing with Java installation and configuration.
+- **Compatibility:** Many software applications, tools, and services rely on Java, making it a useful component for a virtual machine's versatility.
+
+### Adobe Acrobat Reader
+- **Document Viewing:** Users can easily open and view PDF documents, which are commonly used for documentation and information sharing.
+- **User Convenience:** PDF files are ubiquitous in various domains, and not everyone has an alternative PDF viewer installed. 

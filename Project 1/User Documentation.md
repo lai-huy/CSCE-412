@@ -6,7 +6,7 @@
     </picture>
 </p>
 
-# Using the Environment
+# User Documentation
 
 The Virtual Machine comes preinstalled with the following programs:
 
