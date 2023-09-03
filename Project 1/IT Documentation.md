@@ -1,4 +1,10 @@
-![TAMU Department of Computer Science and Engineering](logo.png)
+<p align="center">
+    <picture>
+        <source media="(prefers-color-scheme: dark)" srcset="logo_dark.png">
+        <source media="(prefers-color-scheme: light)" srcset="logo_light.png">
+        <img alt="TAMU Department of Computer Science and Engineering" src="logo_dark.png">
+    </picture>
+</p>
 
 # Creating the Environment
 The Virtual Machine was created using Amazon Web Service's Lightsail framework using the Windows Server 2019.  
