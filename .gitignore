@@ -1,5 +1,7 @@
 .vscode/
 *.gpg
 *.out
+*.debug
+*.log
 
 Syllabus.pdf
