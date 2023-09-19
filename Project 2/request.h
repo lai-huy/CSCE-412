@@ -6,32 +6,73 @@
 
 using std::string, std::ostringstream, std::ostream, std::to_string;
 
+/**
+ * @brief The Request class represents a network request with source and destination IP addresses and a timestamp.
+ */
 class Request {
 private:
-    string ipIn;
-    string ipOut;
-    size_t time;
+	/**
+	 * @brief Source IP Address of the request
+	 */
+	string ipIn;
 
-    size_t random(int min, int max) {
-        return min + rand() % (max - min + 1);
-    }
+	/**
+	 * @brief Desination IP Address of the request
+	 */
+	string ipOut;
 
-    string generate_IP() {
-        std::ostringstream oss;
-        oss << random(1, 255) << "." << random(0, 255) << "." << random(0, 255) << "." << random(1, 255);
-        return oss.str();
-    }
+	/**
+	 * @brief Time stamp of the request.
+	 */
+	size_t time;
+
+	/**
+	 * @brief Generated a random unsigned long within the range [min, max)
+	 *
+	 * @param min lower bound
+	 * @param max higher bound
+	 * @return size_t random number generated
+	 */
+	size_t random(size_t min, size_t max) {
+		return min + rand() % (max - min + 1);
+	}
+
+	/**
+	 * @brief Generates a random Internet Protocall Address
+	 *
+	 * @return string random IP address
+	 */
+	string generate_IP() {
+		std::ostringstream oss;
+		oss << random(1, 255) << "." << random(0, 255) << "." << random(0, 255) << "." << random(1, 255);
+		return oss.str();
+	}
 public:
-    Request() : ipIn{this->generate_IP()}, ipOut{this->generate_IP()}, time{this->random(0, 3)} {}
+	/**
+	 * @brief Construct a new Request object
+	 */
+	Request() : ipIn{this->generate_IP()}, ipOut{this->generate_IP()}, time{this->random(0, 3)} {}
 
-    friend ostream& operator<<(ostream& os, const Request& request) {
-        os << "Request{ipIn=" << request.ipIn << ", ipOut=" << request.ipOut << ", time=" << to_string(request.time) << "}";
-        return os;
-    }
+	/**
+	 * @brief Overloaded stream insertion operator to print the Request object.
+	 *
+	 * @param os The output stream to which the Request object is printed.
+	 * @param request The Request object to be printed.
+	 * @return ostream& The output stream after printing the Request object.
+	 */
+	friend ostream& operator<<(ostream& os, const Request& request) {
+		os << "Request{ipIn=" << request.ipIn << ", ipOut=" << request.ipOut << ", time=" << to_string(request.time) << "}";
+		return os;
+	}
 
-    const size_t& getTime() const {
-        return this->time;
-    }
+	/**
+	* @brief Get the timestamp of the Request.
+	*
+	* @return const size_t& The timestamp of the Request.
+	*/
+	const size_t& getTime() const {
+		return this->time;
+	}
 };
 
 #endif // REQUEST_H
