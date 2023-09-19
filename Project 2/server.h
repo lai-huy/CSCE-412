@@ -7,6 +7,7 @@
 
 using std::string, std::ostream;
 using std::cout;
+using std::move, std::swap;
 
 /**
  * @brief The Server class represents a server that can handle requests.
@@ -24,39 +25,73 @@ private:
 	Request current_request;
 
 	/**
-	 * @brief The timestamp when the current request started to be handled.
+	 * @brief Remaining time .
 	 */
-	size_t current_wait;
+	size_t time;
+
+	bool active;
 public:
+	/**
+	 * @brief Construct a new Server object
+	 */
+	Server() : name{string{}}, current_request{Request{"", "", 0}}, time{0}, active{false} {}
+
 	/**
 	 * @brief Construct a new Server object
 	 *
 	 * @param name The name of the server
 	 */
-	Server(const string& name) : name{name}, current_request{Request{}}, current_wait{0} {}
+	Server(const string& name) : name{name}, current_request{Request{"", "", 0}}, time{0}, active{false} {}
 
-	Server(const Server& other) : name{other.name}, current_request{other.current_request}, current_wait{other.current_wait} {}
+	/**
+	 * @brief Construct a new Server object
+	 *
+	 * @param other Server to copy from
+	 */
+	Server(const Server& other) : name{other.name}, current_request{other.current_request}, time{other.time}, active{other.active} {}
 
-	Server(Server&& other) : name{move(other.name)}, current_request{move(other.current_request)}, current_wait{other.current_wait} {
-		other.current_wait = 0;
+	/**
+	 * @brief Construct a new Server object
+	 *
+	 * @param other Server to move from
+	 */
+	Server(Server&& other) : name{move(other.name)}, current_request{move(other.current_request)}, time{other.time}, active{other.active} {
+		other.time = 0;
+		other.active = false;
 	}
 
+	/**
+	 * @brief Copy assignment operator
+	 *
+	 * @param other Server to copy from
+	 * @return Server& *this
+	 */
 	Server& operator=(const Server& other) {
 		if (this != &other) {
 			this->name = other.name;
 			this->current_request = other.current_request;
-			this->current_wait = other.current_wait;
+			this->time = other.time;
+			this->active = other.active;
 		}
 
 		return *this;
 	}
 
+	/**
+	 * @brief Move assignmnet operator
+	 *
+	 * @param other Server to move from
+	 * @return Server& *this
+	 */
 	Server& operator=(Server&& other) {
 		if (this != &other) {
 			this->name = move(other.name);
 			this->current_request = move(other.current_request);
-			this->current_wait = other.current_wait;
-			other.current_wait = 0;
+			this->time = other.time;
+			other.time = 0;
+
+			this->active = other.active;
+			other.active = false;
 		}
 
 		return *this;
@@ -66,12 +101,17 @@ public:
 	 * @brief Handles a request by the server.
 	 *
 	 * @param request The request to be handled.
-	 * @param timestamp The timestamp when the request is received.
 	 */
-	void handle_request(const Request& request, size_t timestamp) {
+	void setRequest(const Request& request) {
 		this->current_request = request;
-		this->current_wait = timestamp;
-		cout << *this << " is handling Request:\t" << this->current_request << "\n";
+		this->active = true;
+		this->time = 0;
+	}
+
+	void handleCurrentRequest() {
+		cout << *this << " is handling " << this->current_request << "\n";
+		if (++this->time == this->current_request.getTime())
+			this->active = false;
 	}
 
 	/**
@@ -108,8 +148,12 @@ public:
 	 *
 	 * @return const size_t& A constant reference to the timestamp.
 	 */
-	const size_t& time() const {
-		return this->current_wait;
+	const size_t& getTime() const {
+		return this->time;
+	}
+
+	bool isRunning() const {
+		return this->active;
 	}
 };
 

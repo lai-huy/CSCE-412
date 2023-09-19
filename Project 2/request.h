@@ -23,9 +23,9 @@ private:
 	string ipOut;
 
 	/**
-	 * @brief Time stamp of the request.
+	 * @brief How long a request takes to process.
 	 */
-	size_t time;
+	size_t duration;
 
 	/**
 	 * @brief Generated a random unsigned long within the range [min, max)
@@ -52,30 +52,54 @@ public:
 	/**
 	 * @brief Construct a new Request object
 	 */
-	Request() : ipIn{this->generate_IP()}, ipOut{this->generate_IP()}, time{this->random(0, 3)} {}
+	Request() : ipIn{this->generate_IP()}, ipOut{this->generate_IP()}, duration{this->random(3, 10)} {}
 
-	Request(const Request& other) : ipIn{other.ipIn}, ipOut{other.ipOut}, time{other.time} {}
+	Request(const string& ipIn, const string& ipOut, size_t duration) : ipIn{ipIn}, ipOut{ipOut}, duration{duration} {}
 
-	Request(Request&& other) noexcept : ipIn{move(other.ipIn)}, ipOut{move(other.ipOut)}, time{other.time} {
-		other.time = 0;
+	/**
+	 * @brief Construct a new Request object
+	 *
+	 * @param other Request to copy from
+	 */
+	Request(const Request& other) : ipIn{other.ipIn}, ipOut{other.ipOut}, duration{other.duration} {}
+
+	/**
+	 * @brief Construct a new Request object
+	 *
+	 * @param other Request to move from
+	 */
+	Request(Request&& other) noexcept : ipIn{move(other.ipIn)}, ipOut{move(other.ipOut)}, duration{other.duration} {
+		other.duration = 0;
 	}
 
+	/**
+	 * @brief Copy assignment operator
+	 *
+	 * @param other Request to copy from
+	 * @return Request& *this
+	 */
 	Request& operator=(const Request& other) {
 		if (this != &other) {
 			this->ipIn = other.ipIn;
 			this->ipOut = other.ipOut;
-			this->time = other.time;
+			this->duration = other.duration;
 		}
 
 		return *this;
 	}
 
+	/**
+	 * @brief Move assignment operator
+	 *
+	 * @param other Request to move from
+	 * @return Request& *this
+	 */
 	Request& operator=(Request&& other) noexcept {
 		if (this != &other) {
 			this->ipIn = move(other.ipIn);
 			this->ipOut = move(other.ipOut);
-			this->time = other.time;
-			other.time = 0;
+			this->duration = other.duration;
+			other.duration = 0;
 		}
 
 		return *this;
@@ -89,7 +113,7 @@ public:
 	 * @return ostream& The output stream after printing the Request object.
 	 */
 	friend ostream& operator<<(ostream& os, const Request& request) {
-		os << "Request{ipIn=" << request.ipIn << ", ipOut=" << request.ipOut << ", time=" << to_string(request.time) << "}";
+		os << "Request{ipIn=" << request.ipIn << ", ipOut=" << request.ipOut << ", duration=" << to_string(request.duration) << "}";
 		return os;
 	}
 
@@ -99,7 +123,7 @@ public:
 	* @return const size_t& The timestamp of the Request.
 	*/
 	const size_t& getTime() const {
-		return this->time;
+		return this->duration;
 	}
 };
 
