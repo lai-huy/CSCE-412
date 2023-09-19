@@ -2,9 +2,11 @@
 #define SERVER_H
 
 #include <string>
+#include <iostream>
 #include "request.h"
 
 using std::string, std::ostream;
+using std::cout;
 
 class Server {
 private:
@@ -16,8 +18,9 @@ public:
     Server(const string& name) : name{name}, current_request{Request{}}, current_wait{0} {}
 
     void handle_request(const Request& request, size_t timestamp) {
-        current_request = request;
-        current_wait = timestamp;
+        this->current_request = request;
+        this->current_wait = timestamp;
+        cout << *this << " is handling Request:\t" << this->current_request << "\n";
     }
 
     friend ostream& operator<<(ostream& os, const Server& server) {

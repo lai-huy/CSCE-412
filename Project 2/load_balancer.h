@@ -3,9 +3,12 @@
 
 #include <vector>
 #include <queue>
+#include <tuple>
 #include "server.h"
 
-using std::vector, std::queue, std::string;
+using std::vector, std::queue;
+using std::string;
+using std::tuple;
 using std::cout;
 
 class LoadBalancer {
@@ -18,17 +21,14 @@ private:
 	queue<Request> requests;
 	vector<Server> webservers;
 	queue<Server> free_webservers;
-	vector<Request> handled_requests;
-	vector<Server> handled_servers;
-	vector<string> handled_times;
+	vector<tuple<Server, Request, size_t>> handled;
 
 	vector<Server> start_webservers() {
 		vector<Server> webserver_list;
 
 		cout << "New webservers created: ";
 		for (size_t i = 0; i < num_servers; ++i) {
-			const string& name = "S" + to_string(i);
-			Server new_server(name);
+			Server new_server("S" + to_string(i));
 			cout << new_server;
 
 			if (i != num_servers - 1)
@@ -57,7 +57,8 @@ public:
 	LoadBalancer(size_t run_time, size_t num_servers, size_t initial_requests) : runtime{run_time}, num_servers{num_servers},
 		initial_requests{initial_requests}, clock{0},
 		requests{queue<Request>{}}, webservers{vector<Server>{}}, free_webservers{queue<Server>{}},
-		handled_requests{vector<Request>{}}, handled_servers{vector<Server>{}}, handled_times{vector<string>{}} {}
+		handled{vector<tuple<Server, Request, size_t>>{}} {
+	}
 
 	void initialize() {
 		this->webservers = this->start_webservers();
@@ -65,22 +66,22 @@ public:
 	}
 
 	void run() {
-		while (clock < runtime && !requests.empty()) {
-			++clock;
+		while (this->clock < this->runtime && !requests.empty()) {
+			++this->clock;
 
-			if (!requests.empty() && free_webservers.empty())
-				server_sweep();
+			if (this->free_webservers.empty())
+				this->server_sweep();
 
-			while (!free_webservers.empty() && !requests.empty())
-				assign_request();
+			while (!this->free_webservers.empty())
+				this->assign_request();
 		}
 	}
 
 	void assign_request() {
-		Server current_server = free_webservers.front();
-		free_webservers.pop();
+		Server current_server = this->free_webservers.front();
+		this->free_webservers.pop();
 
-		const Request& current_request = requests.front();
+		const Request& current_request = this->requests.front();
 		this->requests.pop();
 
 		current_server.handle_request(current_request, this->clock);
@@ -89,21 +90,18 @@ public:
 	void server_sweep() {
 		for (const Server& server : this->webservers) {
 			const Request& request = server.getRequest();
-			size_t request_duration = this->clock - server.time();
+			size_t time = this->clock - server.time();
 
-			if (request_duration >= request.getTime()) {
-				//this means the server is done with the request
-				handled_requests.push_back(request);
-				handled_times.push_back(to_string(request_duration));
+			if (time >= request.getTime()) {
+				this->handled.emplace_back(server, request, time);
 				this->free_webservers.push(server);
 			}
 		}
 	}
 
 	void print_log() const {
-		for (size_t i = 0; i < this->handled_requests.size(); ++i) {
-			cout << "At " << this->handled_times[i] << " "
-				<< this->handled_servers[i].getName() << " processed request " << this->handled_requests[i] << "\n";
+		for (const auto& [server, request, time] : this->handled) {
+			cout << "At " << to_string(time) << " " << server << " processed request " << request << "\n";
 		}
 	}
 };
