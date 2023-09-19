@@ -35,6 +35,33 @@ public:
 	 */
 	Server(const string& name) : name{name}, current_request{Request{}}, current_wait{0} {}
 
+	Server(const Server& other) : name{other.name}, current_request{other.current_request}, current_wait{other.current_wait} {}
+
+	Server(Server&& other) : name{move(other.name)}, current_request{move(other.current_request)}, current_wait{other.current_wait} {
+		other.current_wait = 0;
+	}
+
+	Server& operator=(const Server& other) {
+		if (this != &other) {
+			this->name = other.name;
+			this->current_request = other.current_request;
+			this->current_wait = other.current_wait;
+		}
+
+		return *this;
+	}
+
+	Server& operator=(Server&& other) {
+		if (this != &other) {
+			this->name = move(other.name);
+			this->current_request = move(other.current_request);
+			this->current_wait = other.current_wait;
+			other.current_wait = 0;
+		}
+
+		return *this;
+	}
+
 	/**
 	 * @brief Handles a request by the server.
 	 *

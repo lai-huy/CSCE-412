@@ -5,6 +5,7 @@
 #include <sstream>
 
 using std::string, std::ostringstream, std::ostream, std::to_string;
+using std::move;
 
 /**
  * @brief The Request class represents a network request with source and destination IP addresses and a timestamp.
@@ -52,6 +53,33 @@ public:
 	 * @brief Construct a new Request object
 	 */
 	Request() : ipIn{this->generate_IP()}, ipOut{this->generate_IP()}, time{this->random(0, 3)} {}
+
+	Request(const Request& other) : ipIn{other.ipIn}, ipOut{other.ipOut}, time{other.time} {}
+
+	Request(Request&& other) noexcept : ipIn{move(other.ipIn)}, ipOut{move(other.ipOut)}, time{other.time} {
+		other.time = 0;
+	}
+
+	Request& operator=(const Request& other) {
+		if (this != &other) {
+			this->ipIn = other.ipIn;
+			this->ipOut = other.ipOut;
+			this->time = other.time;
+		}
+
+		return *this;
+	}
+
+	Request& operator=(Request&& other) noexcept {
+		if (this != &other) {
+			this->ipIn = move(other.ipIn);
+			this->ipOut = move(other.ipOut);
+			this->time = other.time;
+			other.time = 0;
+		}
+
+		return *this;
+	}
 
 	/**
 	 * @brief Overloaded stream insertion operator to print the Request object.
