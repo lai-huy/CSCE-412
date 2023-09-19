@@ -1,3 +1,5 @@
 .vscode/
 *.gpg
+*.out
+
 Syllabus.pdf
