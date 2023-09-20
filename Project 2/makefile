@@ -13,3 +13,7 @@ memory_errors:
 
 clean: 
 	rm -f *.gcov *.gcda *.gcno *.out
+
+docs:
+	rm -rf ./docs
+	doxygen config
