@@ -48,12 +48,20 @@ private:
 		oss << random(1, 255) << "." << random(0, 255) << "." << random(0, 255) << "." << random(1, 255);
 		return oss.str();
 	}
+
 public:
 	/**
 	 * @brief Construct a new Request object
 	 */
 	Request() : ipIn{this->generate_IP()}, ipOut{this->generate_IP()}, duration{this->random(3, 10)} {}
 
+	/**
+	 * @brief Construct a new Request object
+	 *
+	 * @param ipIn source IP address of the request
+	 * @param ipOut destination IP address of the request
+	 * @param duration duration of the request
+	 */
 	Request(const string& ipIn, const string& ipOut, size_t duration) : ipIn{ipIn}, ipOut{ipOut}, duration{duration} {}
 
 	/**
@@ -71,6 +79,11 @@ public:
 	Request(Request&& other) noexcept : ipIn{move(other.ipIn)}, ipOut{move(other.ipOut)}, duration{other.duration} {
 		other.duration = 0;
 	}
+
+	/**
+	 * @brief Destroy the Request object
+	 */
+	~Request() = default;
 
 	/**
 	 * @brief Copy assignment operator

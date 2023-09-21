@@ -6,7 +6,7 @@
 #include <tuple>
 #include "server.h"
 
-using std::array, std::vector, std::queue;
+using std::vector, std::queue;
 using std::string;
 using std::tuple;
 using std::cout;
@@ -16,23 +16,46 @@ using std::cout;
  */
 class LoadBalancer {
 private:
+	/**
+	 * @brief Maximum runtime of the load balancer
+	 */
 	size_t runtime;
+
+	/**
+	 * @brief The number of servers in the load balancer
+	 */
 	size_t num_servers;
+
+	/**
+	 * @brief The number of requests to process
+	 */
 	size_t num_requests;
+
+	/**
+	 * @brief Current "system time" of the load balancer
+	 */
 	size_t clock;
 
+	/**
+	 * @brief Queue of requests
+	 */
 	queue<Request> requests;
+
+	/**
+	 * @brief List of servers in the load balancer
+	 */
 	vector<Server> servers;
+
+	/**
+	 * @brief List of
+	 */
 	vector<tuple<Server, Request, size_t>> handled;
 
 	/**
 	 * @brief Starts a set of web servers and initializes them.
-	 *
-	 * @return vector<Server> A vector of initialized web servers.
 	 */
-	vector<Server> start_webservers() {
-		vector<Server> webserver_list;
-
+	void start_webservers() {
+		this->servers.clear();
 		cout << "New webservers created: ";
 		for (size_t i = 0; i < num_servers; ++i) {
 			Server new_server("S" + to_string(i));
@@ -41,28 +64,23 @@ private:
 			if (i != num_servers - 1)
 				cout << ", ";
 
-			webserver_list.push_back(new_server);
+			this->servers.push_back(new_server);
 		}
+
 		cout << "\n";
-		return webserver_list;
 	}
 
 	/**
 	 * @brief Populates the request queue with initial requests.
-	 *
-	 * @return queue<Request> The queue of initial requests.
 	 */
-	queue<Request> populate_requests() {
-		queue<Request> requests;
-
-		for (size_t i = 0; i < num_requests; ++i) {
-			Request new_request{};
-			cout << "New Request " << new_request << "\n";
-			requests.push(new_request);
+	void populate_requests() {
+		for (size_t i = 0; i < this->num_requests; ++i) {
+			Request request{};
+			cout << "New Request " << request << "\n";
+			this->requests.push(request);
 		}
 
-		cout << "Request queue has been populated with " << to_string(num_requests) << " requests.\n";
-		return requests;
+		cout << "Request queue has been populated with " << to_string(this->num_requests) << " requests.\n";
 	}
 public:
 	/**
@@ -73,16 +91,18 @@ public:
 	 * @param initial_requests The initial number of requests to populate the queue.
 	 */
 	LoadBalancer(size_t run_time, size_t num_servers, size_t num_requests) : runtime{run_time}, num_servers{num_servers},
-		num_requests{num_requests}, clock{0}, requests{queue<Request>{}}, servers{vector<Server>(num_servers)},
+		num_requests{num_requests}, clock{0}, requests{queue<Request>{}}, servers{vector<Server>{}},
 		handled{vector<tuple<Server, Request, size_t>>{}} {
 	}
+
+	~LoadBalancer() = default;
 
 	/**
 	 * @brief Initializes the load balancer by creating servers and populating requests.
 	 */
 	void initialize() {
-		this->servers = this->start_webservers();
-		this->requests = this->populate_requests();
+		this->start_webservers();
+		this->populate_requests();
 	}
 
 	/**
@@ -98,7 +118,7 @@ public:
 			if (++this->clock >= this->runtime)
 				break;
 
-			cout << "Clock:\t" << this->clock << "\n";
+			// cout << "Clock:\t" << this->clock << "\n";
 
 			for (Server& server : this->servers) {
 				if (server.isRunning())
@@ -116,9 +136,8 @@ public:
 	 * @brief Prints the log of processed requests.
 	 */
 	void print_log() const {
-		for (const auto& [server, request, time] : this->handled) {
+		for (const auto& [server, request, time] : this->handled)
 			cout << "At " << to_string(time) << " " << server << " processed request " << request << "\n";
-		}
 	}
 };
 

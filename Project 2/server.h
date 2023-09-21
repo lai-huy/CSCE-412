@@ -29,6 +29,9 @@ private:
 	 */
 	size_t time;
 
+	/**
+	 * @brief Boolean marking is this server is currently processing its current request.
+	 */
 	bool active;
 public:
 	/**
@@ -59,6 +62,11 @@ public:
 		other.time = 0;
 		other.active = false;
 	}
+
+	/**
+	 * @brief Destroy the Server object
+	 */
+	~Server() = default;
 
 	/**
 	 * @brief Copy assignment operator
@@ -135,23 +143,11 @@ public:
 	}
 
 	/**
-	 * @brief Get the Name object
+	 * @brief Determine if this server is running.
 	 *
-	 * @return const string& A constant reference to the name of the server.
+	 * @return true if this server is busy
+	 * @return false otherwise
 	 */
-	const string& getName() const {
-		return this->name;
-	}
-
-	/**
-	 * @brief Gets the timestamp when the current request started to be handled.
-	 *
-	 * @return const size_t& A constant reference to the timestamp.
-	 */
-	const size_t& getTime() const {
-		return this->time;
-	}
-
 	bool isRunning() const {
 		return this->active;
 	}
