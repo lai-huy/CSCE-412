@@ -1,4 +1,6 @@
 .vscode/
+docs/
+
 *.gpg
 *.out
 *.debug
