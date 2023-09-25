@@ -47,9 +47,9 @@ private:
 	vector<Server> servers;
 
 	/**
-	 * @brief List of
+	 * @brief List of completed requests, the server that completed the request and when the request was finished
 	 */
-	vector<tuple<Server, Request, size_t>> handled;
+	vector<tuple<Request, Server, size_t>> handled;
 
 	/**
 	 * @brief Starts a set of web servers and initializes them.
@@ -88,11 +88,11 @@ public:
 	 *
 	 * @param run_time The total runtime of the load balancer.
 	 * @param num_servers The number of web servers in the load balancer.
-	 * @param initial_requests The initial number of requests to populate the queue.
+	 * @param num_requests The initial number of requests to populate the queue.
 	 */
 	LoadBalancer(size_t run_time, size_t num_servers, size_t num_requests) : runtime{run_time}, num_servers{num_servers},
 		num_requests{num_requests}, clock{0}, requests{queue<Request>{}}, servers{vector<Server>{}},
-		handled{vector<tuple<Server, Request, size_t>>{}} {
+		handled{vector<tuple<Request, Server, size_t>>{}} {
 	}
 
 	~LoadBalancer() = default;
@@ -136,7 +136,7 @@ public:
 	 * @brief Prints the log of processed requests.
 	 */
 	void print_log() const {
-		for (const auto& [server, request, time] : this->handled)
+		for (const auto& [request, server, time] : this->handled)
 			cout << "At " << to_string(time) << " " << server << " processed request " << request << "\n";
 	}
 };
