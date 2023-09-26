@@ -124,7 +124,7 @@ public:
 				if (server.isRunning())
 					server.handleCurrentRequest();
 				else {
-					this->handled.emplace_back(server, server.getRequest(), this->clock);
+					this->handled.emplace_back(server.getRequest(), server, this->clock);
 					server.setRequest(this->requests.front());
 					this->requests.pop();
 				}
